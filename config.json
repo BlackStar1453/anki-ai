@@ -1,0 +1,14 @@
+{
+    "ai_provider": "openai",
+    "openai_api_key": "",
+    "anthropic_api_key": "",
+    "google_api_key": "",
+    "openai_model": "",
+    "max_tokens": 500,
+    "temperature": 0.7,
+    "use_unified_service": true,
+    "fallback_providers": [],
+    "retry_attempts": 3,
+    "timeout": 30,
+    "debug_mode": false
+}

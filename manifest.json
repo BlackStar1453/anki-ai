@@ -1,0 +1,28 @@
+{
+    "package": "chat-with-card",
+    "name": "Chat with Card",
+    "version": "1.0.0",
+    "description": "AI-powered chat tool for Anki with card generation capabilities. Supports multiple languages (English, Chinese, Japanese).",
+    "author": "Chat with Card Developer",
+    "homepage": "",
+    "tags": ["ai", "chat", "cards", "study", "multilingual", "i18n"],
+    "min_point_version": 45,
+    "max_point_version": 0,
+    "branch_index": 0,
+    "mod": "2025-01-05",
+    "conflicts": [],
+    "config": {
+        "ai_provider": "openai",
+        "openai_api_key": "sk-placeholder-key-here",
+        "anthropic_api_key": "",
+        "google_api_key": "",
+        "openai_model": "gpt-3.5-turbo",
+        "max_tokens": 500,
+        "temperature": 0.7,
+        "use_unified_service": true,
+        "fallback_providers": [],
+        "retry_attempts": 3,
+        "timeout": 30,
+        "debug_mode": false
+    }
+}

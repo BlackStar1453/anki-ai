@@ -1,0 +1,178 @@
+name: Upload to AnkiWeb (Manual)
+
+# 注意：AnkiWeb没有官方API，此工作流程提供半自动化方案
+# 实际上传仍需要手动访问 https://ankiweb.net/shared/addons/
+
+on:
+  workflow_dispatch:  # 仅手动触发
+    inputs:
+      version:
+        description: 'Version to upload (e.g., 2.0.0)'
+        required: true
+      create_release:
+        description: 'Create GitHub release'
+        type: boolean
+        default: true
+
+jobs:
+  prepare-ankiweb-upload:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests mistune tenacity
+        
+    - name: Update version for AnkiWeb
+      run: |
+        VERSION="${{ github.event.inputs.version }}"
+        DATE=$(date +%Y-%m-%d)
+        
+        # 更新manifest.json
+        sed -i "s/\"version\": \".*\"/\"version\": \"$VERSION\"/" manifest.json
+        sed -i "s/\"mod\": \".*\"/\"mod\": \"$DATE\"/" manifest.json
+        
+        echo "Updated to version: $VERSION"
+        echo "Updated mod date: $DATE"
+        
+    - name: Build addon for AnkiWeb
+      run: |
+        python build_addon.py
+        
+    - name: Verify AnkiWeb compliance
+      run: |
+        python check_release.py
+        
+    - name: Find addon file
+      id: find_addon
+      run: |
+        ADDON_FILE=$(find dist -name "*.ankiaddon" -type f | head -1)
+        ADDON_NAME=$(basename "$ADDON_FILE")
+        echo "addon_file=$ADDON_FILE" >> $GITHUB_OUTPUT
+        echo "addon_name=$ADDON_NAME" >> $GITHUB_OUTPUT
+        
+    - name: Create AnkiWeb upload instructions
+      run: |
+        cat > ANKIWEB_UPLOAD_INSTRUCTIONS.md << 'EOF'
+        # AnkiWeb Upload Instructions
+        
+        ## 📤 Ready for AnkiWeb Upload!
+        
+        ### 🔗 Upload URL
+        https://ankiweb.net/shared/addons/
+        
+        ### 📋 Upload Steps
+        1. **Login** to AnkiWeb with your account
+        2. **Click** the "Upload" button
+        3. **Select** the addon file: `${{ steps.find_addon.outputs.addon_name }}`
+        4. **Fill** the addon information form:
+        
+        #### 📝 Addon Information
+        - **Name**: Chat with Card
+        - **Description**: Use the description from RELEASE_INFO file
+        - **Tags**: ai, chat, cards, study, multilingual, i18n
+        - **Anki Version**: 2.1.0+
+        
+        #### 📖 Description Template
+        ```
+        Chat with Card - AI-Powered Anki Assistant
+        
+        Transform your Anki study experience with AI-powered conversations!
+        
+        🤖 **Chat with AI**: Ask questions about your cards and get intelligent responses
+        📝 **Create Cards**: Generate new Anki cards directly from your conversations  
+        🌍 **Multi-language**: Full interface support for English, Chinese, and Japanese
+        ✨ **Rich Formatting**: Markdown support for beautiful card content
+        🎨 **Modern Design**: Clean, minimalist interface
+        
+        **Languages**: English, 简体中文, 繁體中文, 日本語
+        **Anki Version**: 2.1.0+
+        **Self-contained**: No additional installations required
+        ```
+        
+        ### ✅ Pre-upload Checklist
+        - [ ] Addon file is ready: `${{ steps.find_addon.outputs.addon_name }}`
+        - [ ] File size is reasonable (check artifacts)
+        - [ ] All tests passed
+        - [ ] Release notes are prepared
+        - [ ] AnkiWeb account is ready
+        
+        ### 🚀 After Upload
+        1. **Test** the uploaded addon in a clean Anki installation
+        2. **Monitor** for user feedback and bug reports
+        3. **Update** documentation if needed
+        4. **Prepare** for future version updates
+        
+        ---
+        Generated automatically by GitHub Actions
+        EOF
+        
+    - name: Create GitHub Release (if requested)
+      if: ${{ github.event.inputs.create_release == 'true' }}
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: v${{ github.event.inputs.version }}
+        name: Chat with Card v${{ github.event.inputs.version }} (AnkiWeb Ready)
+        body: |
+          ## 📤 Ready for AnkiWeb Upload
+          
+          This release is prepared and verified for AnkiWeb submission.
+          
+          ### 🔗 Next Steps
+          1. Download the `.ankiaddon` file below
+          2. Visit https://ankiweb.net/shared/addons/
+          3. Upload the addon file
+          4. Follow the instructions in `ANKIWEB_UPLOAD_INSTRUCTIONS.md`
+          
+          ### ✅ Verification Status
+          - ✅ Package structure verified
+          - ✅ Dependencies bundled correctly
+          - ✅ Multi-language support included
+          - ✅ No __pycache__ or .pyc files
+          - ✅ Manifest.json validated
+          
+        files: |
+          ${{ steps.find_addon.outputs.addon_file }}
+          dist/INSTALLATION_GUIDE_*.html
+          dist/RELEASE_INFO_*.md
+          ANKIWEB_UPLOAD_INSTRUCTIONS.md
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Upload AnkiWeb-ready artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: ankiweb-ready-v${{ github.event.inputs.version }}
+        path: |
+          ${{ steps.find_addon.outputs.addon_file }}
+          dist/*.html
+          dist/*.md
+          ANKIWEB_UPLOAD_INSTRUCTIONS.md
+        retention-days: 30
+        
+    - name: Summary
+      run: |
+        echo "## 🎉 AnkiWeb Upload Preparation Complete!" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 📦 Generated Files:" >> $GITHUB_STEP_SUMMARY
+        echo "- **Addon File**: \`${{ steps.find_addon.outputs.addon_name }}\`" >> $GITHUB_STEP_SUMMARY
+        echo "- **Size**: $(du -h "${{ steps.find_addon.outputs.addon_file }}" | cut -f1)" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 🔗 Next Steps:" >> $GITHUB_STEP_SUMMARY
+        echo "1. Download the addon file from the artifacts" >> $GITHUB_STEP_SUMMARY
+        echo "2. Visit [AnkiWeb Upload Page](https://ankiweb.net/shared/addons/)" >> $GITHUB_STEP_SUMMARY
+        echo "3. Follow the upload instructions in the artifacts" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### ✅ Verification:" >> $GITHUB_STEP_SUMMARY
+        echo "All pre-upload checks have passed successfully!" >> $GITHUB_STEP_SUMMARY

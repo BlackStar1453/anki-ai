@@ -1,0 +1,140 @@
+# English translation for Chat with Card
+# Copyright (C) 2025 Chat with Card
+# This file is distributed under the same license as the Chat with Card package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Chat with Card 2.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-01-05 12:00+0000\n"
+"PO-Revision-Date: 2025-01-05 12:00+0000\n"
+"Last-Translator: AI Assistant\n"
+"Language-Team: English\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# Menu items
+msgid "Chat with Card"
+msgstr "Chat with Card"
+
+msgid "Open Chat"
+msgstr "Open Chat"
+
+msgid "Settings"
+msgstr "Settings"
+
+# Chat dialog
+msgid "Chat with AI"
+msgstr "Chat with AI"
+
+msgid "Type your message..."
+msgstr "Type your message..."
+
+msgid "Send"
+msgstr "Send"
+
+msgid "Clear Chat"
+msgstr "Clear Chat"
+
+msgid "Create Card"
+msgstr "Create Card"
+
+msgid "Close"
+msgstr "Close"
+
+# Settings dialog
+msgid "Chat with Card Settings"
+msgstr "Chat with Card Settings"
+
+msgid "Language"
+msgstr "Language"
+
+msgid "AI Provider"
+msgstr "AI Provider"
+
+msgid "API Key"
+msgstr "API Key"
+
+msgid "Model"
+msgstr "Model"
+
+msgid "Max Tokens"
+msgstr "Max Tokens"
+
+msgid "Temperature"
+msgstr "Temperature"
+
+msgid "Save"
+msgstr "Save"
+
+msgid "Cancel"
+msgstr "Cancel"
+
+# Messages
+msgid "AI is thinking..."
+msgstr "AI is thinking..."
+
+msgid "Failed to get AI response"
+msgstr "Failed to get AI response"
+
+msgid "Card created successfully"
+msgstr "Card created successfully"
+
+msgid "Failed to create card"
+msgstr "Failed to create card"
+
+msgid "Please enter a message"
+msgstr "Please enter a message"
+
+msgid "Settings saved successfully"
+msgstr "Settings saved successfully"
+
+# Card creation
+msgid "Question"
+msgstr "Question"
+
+msgid "Answer"
+msgstr "Answer"
+
+msgid "Deck"
+msgstr "Deck"
+
+msgid "Note Type"
+msgstr "Note Type"
+
+# Error messages
+msgid "Error"
+msgstr "Error"
+
+msgid "Warning"
+msgstr "Warning"
+
+msgid "Information"
+msgstr "Information"
+
+msgid "API key is required"
+msgstr "API key is required"
+
+msgid "Invalid API key"
+msgstr "Invalid API key"
+
+msgid "Network error"
+msgstr "Network error"
+
+msgid "Timeout error"
+msgstr "Timeout error"
+
+# Status messages
+msgid "Ready"
+msgstr "Ready"
+
+msgid "Connecting..."
+msgstr "Connecting..."
+
+msgid "Processing..."
+msgstr "Processing..."
+
+msgid "Done"
+msgstr "Done"

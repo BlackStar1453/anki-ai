@@ -1,0 +1,20 @@
+# LiteLLM 迁移项目依赖
+# 生成时间: 2025-09-04
+
+# 核心 AI 库
+litellm>=1.76.0
+openai>=1.0.0
+tenacity>=9.0.0
+
+# 现有项目依赖
+requests>=2.25.0
+aqt>=2.1.0
+mistune>=3.0.0
+
+# 开发和测试依赖
+pytest>=7.0.0
+pytest-asyncio>=0.21.0
+
+# 可选的多提供商支持
+# anthropic>=0.25.0  # 如果需要 Anthropic 支持
+# google-generativeai>=0.3.0  # 如果需要 Google AI 支持

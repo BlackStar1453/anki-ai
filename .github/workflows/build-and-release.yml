@@ -1,0 +1,115 @@
+name: Build and Release Chat with Card
+
+on:
+  push:
+    tags:
+      - 'v*'  # 触发条件：推送版本标签 (如 v2.0.0)
+  workflow_dispatch:  # 允许手动触发
+    inputs:
+      version:
+        description: 'Release version (e.g., 2.0.0)'
+        required: true
+        default: '2.0.0'
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        # 安装打包所需的依赖（这些会被打包到vendor目录）
+        pip install requests mistune tenacity
+        
+    - name: Extract version from tag or input
+      id: version
+      run: |
+        if [ "${{ github.event_name }}" = "push" ]; then
+          VERSION=${GITHUB_REF#refs/tags/v}
+        else
+          VERSION="${{ github.event.inputs.version }}"
+        fi
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "Version: $VERSION"
+        
+    - name: Update manifest version
+      run: |
+        VERSION="${{ steps.version.outputs.version }}"
+        # 更新manifest.json中的版本号
+        sed -i "s/\"version\": \".*\"/\"version\": \"$VERSION\"/" manifest.json
+        # 更新修改日期
+        DATE=$(date +%Y-%m-%d)
+        sed -i "s/\"mod\": \".*\"/\"mod\": \"$DATE\"/" manifest.json
+        
+    - name: Build addon package
+      run: |
+        python build_addon.py
+        
+    - name: Run release checks
+      run: |
+        python check_release.py
+        
+    - name: Find built addon file
+      id: find_addon
+      run: |
+        ADDON_FILE=$(find dist -name "*.ankiaddon" -type f | head -1)
+        echo "addon_file=$ADDON_FILE" >> $GITHUB_OUTPUT
+        echo "Found addon file: $ADDON_FILE"
+        
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: v${{ steps.version.outputs.version }}
+        name: Chat with Card v${{ steps.version.outputs.version }}
+        body: |
+          ## 🎉 Chat with Card v${{ steps.version.outputs.version }}
+          
+          ### ✨ Features
+          - 🤖 AI-powered chat interface with markdown support
+          - 📝 Direct card creation from conversations
+          - 🌍 Multi-language support (English, 简体中文, 繁體中文, 日本語)
+          - 🎨 Modern, minimalist UI design
+          
+          ### 📦 Installation
+          1. Download the `.ankiaddon` file below
+          2. In Anki: Tools > Add-ons > Install from file
+          3. Select the downloaded file
+          4. Restart Anki
+          5. Configure your AI API key in the settings
+          
+          ### 🔧 Technical Details
+          - **Anki Version**: 2.1.0+
+          - **Self-contained**: No additional installations required
+          - **Languages**: Auto-detection with manual switching
+          
+          ### 📋 Files
+          - `${{ steps.find_addon.outputs.addon_file }}` - Main addon package
+          - Installation guide and release info included in artifacts
+          
+        files: |
+          ${{ steps.find_addon.outputs.addon_file }}
+          dist/INSTALLATION_GUIDE_*.html
+          dist/RELEASE_INFO_*.md
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: chat-with-card-v${{ steps.version.outputs.version }}
+        path: |
+          dist/*.ankiaddon
+          dist/*.html
+          dist/*.md
+        retention-days: 90

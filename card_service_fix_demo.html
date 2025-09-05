@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Service修复演示</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .demo-section {
+            background: white;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .demo-header {
+            background: #111827;
+            color: white;
+            padding: 15px 20px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .demo-content {
+            padding: 20px;
+        }
+        
+        .fix-note {
+            background: #ecfdf5;
+            border: 1px solid #10b981;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .fix-note h4 {
+            margin: 0 0 10px 0;
+            color: #047857;
+        }
+        
+        /* 模拟Anki卡片样式 */
+        .anki-card {
+            background: #fafafa;
+            border: 1px solid #e5e7eb;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+            font-family: Arial, sans-serif;
+        }
+        
+        .card-front {
+            background: #f0f9ff;
+            border: 1px solid #0ea5e9;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+        
+        .card-back {
+            background: white;
+            border: 1px solid #e5e7eb;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        
+        /* 修复前的样式（重复显示） */
+        .before-fix {
+            background: #fef2f2;
+            border: 1px solid #fca5a5;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .before-fix h4 {
+            color: #dc2626;
+            margin: 0 0 10px 0;
+        }
+        
+        /* 修复后的样式 */
+        .after-fix {
+            background: #f0fdf4;
+            border: 1px solid #86efac;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .after-fix h4 {
+            color: #16a34a;
+            margin: 0 0 10px 0;
+        }
+        
+        /* 卡片内容样式 - 模拟实际的格式化输出 */
+        .qa-item {
+            margin: 0 0 8px 0;
+            padding: 12px 16px;
+            border: 1px solid #e5e7eb;
+            text-align: left;
+            line-height: 1.2;
+            display: block;
+        }
+        
+        .qa-label-user {
+            color: #2563eb;
+            font-weight: 600;
+        }
+        
+        .qa-label-ai {
+            color: #059669;
+            font-weight: 600;
+        }
+        
+        /* Markdown样式 */
+        .qa-item h3 {
+            color: #333333;
+            font-weight: 600;
+            line-height: 1.2;
+            margin: 0;
+            padding: 0;
+            text-align: left;
+            font-size: 1.2rem;
+            display: block;
+        }
+        
+        .qa-item ul {
+            margin: 0;
+            padding: 0 0 0 1.5rem;
+            text-align: left;
+            display: block;
+        }
+        
+        .qa-item ol {
+            margin: 0;
+            padding: 0 0 0 1.5rem;
+            text-align: left;
+            display: block;
+        }
+        
+        .qa-item li {
+            margin: 0;
+            padding: 0;
+            text-align: left;
+            display: list-item;
+        }
+        
+        .qa-item p {
+            margin: 0;
+            padding: 0;
+            text-align: left;
+            line-height: 1.2;
+            display: block;
+        }
+        
+        .qa-item strong {
+            font-weight: 600;
+            color: #333333;
+        }
+        
+        .qa-item code {
+            background-color: #f3f4f6;
+            color: #dc2626;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 0.875em;
+        }
+        
+        /* 对比展示 */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Card Service修复演示</h1>
+        
+        <!-- 修复说明 -->
+        <div class="fix-note">
+            <h4>🔧 修复内容</h4>
+            <ul>
+                <li><strong>删除重复显示</strong>：移除摘要行，只显示markdown处理后的完整内容</li>
+                <li><strong>集成mistune库</strong>：使用成熟的markdown解析器替代自制实现</li>
+                <li><strong>完整markdown支持</strong>：支持所有标准markdown语法，包括有序/无序列表</li>
+                <li><strong>统一样式包装</strong>：所有内容都有边框和标签</li>
+                <li><strong>性能优化</strong>：mistune比其他库快2-10倍，无外部依赖</li>
+            </ul>
+        </div>
+        
+        <!-- 修复前后对比 -->
+        <div class="demo-section">
+            <div class="demo-header">修复前后对比</div>
+            <div class="demo-content">
+                <div class="comparison-grid">
+                    <div class="before-fix">
+                        <h4>❌ 修复前（重复显示）</h4>
+                        <div class="qa-item">
+                            <span class="qa-label-ai">Answer:</span> 是的，"motor"这个单词在英语中确实有多个意思...
+                        </div>
+                        <div class="qa-item">
+                            <span class="qa-label-ai">Answer:</span>
+                            <p>是的，"motor"这个单词在英语中确实有多个意思，其中之一是指摩托车。在不同的上下文中，它的意思会有所不同。在你提到的上下文中，"motor"是指汽车机动车辆，通常是用来描述动力驱动的机械。而在其他情况下，比如说"motorbike"或"motorcycle"，"motor"就用来指代摩托车。</p>
+                            <p>这里有几个使用"motor"的例子来帮助你理解：</p>
+                            <ol>
+                                <li>"The washing machine's motor is broken."（洗衣机的电动机坏了。）</li>
+                                <li>"He rides a motorbike to work."（他骑摩托车上班。）</li>
+                                <li>"The car's motor needs maintenance."（汽车的发动机需要保养。）</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="after-fix">
+                        <h4>✅ 修复后（使用mistune库）</h4>
+                        <div class="qa-item">
+                            <span class="qa-label-ai">Answer:</span><br>
+                            <p>是的，"motor"这个单词在英语中确实有多个意思，其中之一是指摩托车。在不同的上下文中，它的意思会有所不同。在你提到的上下文中，"motor"是指汽车机动车辆，通常是用来描述动力驱动的机械。而在其他情况下，比如说"motorbike"或"motorcycle"，"motor"就用来指代摩托车。</p>
+                            <p>这里有几个使用"motor"的例子来帮助你理解：</p>
+                            <ol>
+                                <li>"The washing machine's motor is broken."（洗衣机的电动机坏了。）</li>
+                                <li>"He rides a motorbike to work."（他骑摩托车上班。）</li>
+                                <li>"The car's motor needs maintenance."（汽车的发动机需要保养。）</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 列表支持演示 -->
+        <div class="demo-section">
+            <div class="demo-header">列表支持演示</div>
+            <div class="demo-content">
+                <h4>无序列表示例：</h4>
+                <div class="qa-item">
+                    <span class="qa-label-ai">Answer:</span><br>
+                    <p>Here are some memory techniques:</p>
+                    <ul>
+                        <li>Visual association: Picture the Eiffel Tower</li>
+                        <li>Word association: "Paris" sounds like "pair"</li>
+                        <li>Story method: Create a story about visiting Paris</li>
+                    </ul>
+                </div>
+                
+                <h4>有序列表示例：</h4>
+                <div class="qa-item">
+                    <span class="qa-label-ai">Answer:</span><br>
+                    <p>Follow these steps to improve your memory:</p>
+                    <ol>
+                        <li>Review the material immediately after learning</li>
+                        <li>Practice spaced repetition</li>
+                        <li>Create meaningful connections</li>
+                        <li>Use multiple senses when studying</li>
+                    </ol>
+                </div>
+                
+                <h4>混合内容示例：</h4>
+                <div class="qa-item">
+                    <span class="qa-label-ai">Answer:</span><br>
+                    <h3>Study Techniques</h3>
+                    <p>Here are some <strong>effective</strong> study methods:</p>
+                    <ol>
+                        <li>Active recall using <code>flashcards</code></li>
+                        <li>Spaced repetition scheduling</li>
+                    </ol>
+                    <p>Additional tips:</p>
+                    <ul>
+                        <li>Study in short, focused sessions</li>
+                        <li>Take regular breaks</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mistune库优势演示 -->
+        <div class="demo-section">
+            <div class="demo-header">Mistune库优势演示</div>
+            <div class="demo-content">
+                <h4>🚀 性能优势：</h4>
+                <div class="qa-item">
+                    <span class="qa-label-ai">Answer:</span><br>
+                    <p>Mistune在基准测试中表现优异：</p>
+                    <ul>
+                        <li>比标准markdown库快<strong>3-4倍</strong></li>
+                        <li>比markdown2库快<strong>10倍以上</strong></li>
+                        <li>纯Python实现，无外部依赖</li>
+                    </ul>
+                </div>
+
+                <h4>📦 Anki兼容性：</h4>
+                <div class="qa-item">
+                    <span class="qa-label-ai">Answer:</span><br>
+                    <p>完美适配Anki插件环境：</p>
+                    <ol>
+                        <li>轻量级设计，不会与Anki环境冲突</li>
+                        <li>可以直接打包到插件中</li>
+                        <li>支持所有标准markdown语法</li>
+                        <li>BSD许可证，商业友好</li>
+                    </ol>
+                </div>
+
+                <h4>🔧 高级markdown特性：</h4>
+                <div class="qa-item">
+                    <span class="qa-label-ai">Answer:</span><br>
+                    <p>支持更多markdown特性：</p>
+                    <ul>
+                        <li>表格支持</li>
+                        <li>删除线 <del>~~strikethrough~~</del></li>
+                        <li>任务列表 ☑️</li>
+                        <li>脚注和引用</li>
+                        <li>数学公式（通过插件）</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI聊天界面Markdown支持演示 -->
+        <div class="demo-section">
+            <div class="demo-header">AI聊天界面Markdown支持</div>
+            <div class="demo-content">
+                <div class="fix-note">
+                    <h4>🤖 聊天界面增强</h4>
+                    <p>现在AI聊天界面也支持完整的markdown渲染：</p>
+                    <ul>
+                        <li><strong>实时处理</strong>：AI回复自动进行markdown转换</li>
+                        <li><strong>流式支持</strong>：流式响应也支持markdown处理</li>
+                        <li><strong>样式优化</strong>：专门为聊天界面优化的markdown样式</li>
+                        <li><strong>错误处理</strong>：如果mistune不可用，自动回退到纯文本</li>
+                    </ul>
+                </div>
+
+                <h4>💬 聊天界面示例：</h4>
+                <div style="background: #f9fafb; border: 1px solid #e5e7eb; padding: 15px; border-radius: 4px; margin: 15px 0;">
+                    <!-- 用户消息 -->
+                    <div style="margin: 12px 0; padding: 12px 16px; border: 1px solid #e5e7eb; color: #111827; font-size: 14px; max-width: 75%; margin-left: auto; line-height: 1.5;">
+                        Can you explain the different types of memory techniques?
+                    </div>
+
+                    <!-- AI回复（支持markdown） -->
+                    <div style="margin: 12px 0; padding: 12px 16px; border: 1px solid #e5e7eb; color: #111827; font-size: 14px; max-width: 75%; margin-right: auto; line-height: 1.5;">
+                        <h3 style="color:#111827;font-weight:600;line-height:1.2;margin:8px 0 4px 0;font-size:1.1rem;">Memory Techniques</h3>
+                        <p style="margin:4px 0;color:#111827;line-height:1.4;">Here are some effective memory techniques:</p>
+                        <ol style="margin:8px 0;padding-left:20px;color:#111827;">
+                            <li style="margin:2px 0;color:#111827;"><strong style="font-weight:600;color:#111827;">Spaced Repetition</strong>: Review at increasing intervals</li>
+                            <li style="margin:2px 0;color:#111827;"><strong style="font-weight:600;color:#111827;">Active Recall</strong>: Test yourself without looking</li>
+                            <li style="margin:2px 0;color:#111827;"><strong style="font-weight:600;color:#111827;">Mnemonics</strong>: Use memory aids like <code style="background-color:#f3f4f6;color:#dc2626;padding:2px 4px;border-radius:3px;font-family:monospace;font-size:0.9em;">acronyms</code></li>
+                        </ol>
+                        <blockquote style="margin:8px 0;padding:8px 12px;border-left:3px solid #e5e7eb;background-color:#f9fafb;color:#6b7280;font-style:italic;">
+                            Remember: Consistency is key to effective learning!
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 完整Anki卡片演示 -->
+        <div class="demo-section">
+            <div class="demo-header">完整Anki卡片演示</div>
+            <div class="demo-content">
+                <div class="anki-card">
+                    <div class="card-front">
+                        <strong>Front:</strong> What is the capital of France?
+                    </div>
+                    <div class="card-back">
+                        <strong>Back:</strong> Paris is the capital and most populous city of France.
+                        
+                        <hr style="margin: 6px 0; padding: 0; border: none; border-top: 1px solid #e5e7eb;">
+                        
+                        <div class="qa-item">
+                            <span class="qa-label-user">Question:</span> Can you explain more about Paris?
+                        </div>
+                        
+                        <div class="qa-item">
+                            <span class="qa-label-ai">Answer:</span><br>
+                            <p>Paris is known for several key features:</p>
+                            <ol>
+                                <li>Historical landmarks like the <strong>Eiffel Tower</strong></li>
+                                <li>World-class museums including the <code>Louvre</code></li>
+                                <li>Rich cultural heritage and cuisine</li>
+                            </ol>
+                            <p>Memory tips:</p>
+                            <ul>
+                                <li>Associate with famous landmarks</li>
+                                <li>Remember the romantic city stereotype</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 打包说明 -->
+        <div class="demo-section">
+            <div class="demo-header">📦 插件打包说明</div>
+            <div class="demo-content">
+                <div class="fix-note">
+                    <h4>🔧 统一的打包方式</h4>
+                    <p>为了在Anki插件中使用mistune库，我们更新了打包系统：</p>
+                    <ol>
+                        <li><strong>统一打包脚本</strong>：使用 build_addon.py 作为唯一打包脚本</li>
+                        <li><strong>自动依赖管理</strong>：自动下载mistune等依赖到vendor目录</li>
+                        <li><strong>依赖验证</strong>：打包时验证所有依赖完整性</li>
+                        <li><strong>清理冗余脚本</strong>：删除多余的打包脚本，避免混淆</li>
+                    </ol>
+                </div>
+
+                <h4>📋 使用步骤：</h4>
+                <div class="qa-item">
+                    <span class="qa-label-ai">Instructions:</span><br>
+                    <ol>
+                        <li>运行统一打包脚本：<code>python build_addon.py</code></li>
+                        <li>脚本会自动下载mistune、requests、tenacity到vendor目录</li>
+                        <li>验证所有依赖完整性</li>
+                        <li>创建包含所有依赖的.ankiaddon文件</li>
+                        <li>用户安装后无需手动安装任何依赖</li>
+                    </ol>
+                </div>
+
+                <h4>✅ 优势：</h4>
+                <div class="qa-item">
+                    <span class="qa-label-ai">Benefits:</span><br>
+                    <ul>
+                        <li><strong>自包含</strong>：插件包含所有必需的依赖</li>
+                        <li><strong>用户友好</strong>：无需手动安装第三方库</li>
+                        <li><strong>兼容性好</strong>：遵循Anki官方打包规范</li>
+                        <li><strong>版本控制</strong>：确保使用正确版本的依赖</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 多语言功能演示 -->
+        <div class="demo-section">
+            <div class="demo-header">🌍 多语言支持演示</div>
+            <div class="demo-content">
+                <div class="fix-note">
+                    <h4>🗣️ 支持的语言</h4>
+                    <p>Chat with Card 现在支持4种语言的完整界面翻译：</p>
+                </div>
+
+                <h4>🌐 语言对比表：</h4>
+                <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+                    <thead>
+                        <tr style="background-color: #f3f4f6;">
+                            <th style="border: 1px solid #e5e7eb; padding: 8px; text-align: left;">功能</th>
+                            <th style="border: 1px solid #e5e7eb; padding: 8px; text-align: left;">English</th>
+                            <th style="border: 1px solid #e5e7eb; padding: 8px; text-align: left;">简体中文</th>
+                            <th style="border: 1px solid #e5e7eb; padding: 8px; text-align: left;">繁體中文</th>
+                            <th style="border: 1px solid #e5e7eb; padding: 8px; text-align: left;">日本語</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="border: 1px solid #e5e7eb; padding: 8px; font-weight: bold;">插件名称</td>
+                            <td style="border: 1px solid #e5e7eb; padding: 8px;">Chat with Card</td>
+                            <td style="border: 1px solid #e5e7eb; padding: 8px;">卡片聊天</td>
+                            <td style="border: 1px solid #e5e7eb; padding: 8px;">卡片聊天</td>
+                            <td style="border: 1px solid #e5e7eb; padding: 8px;">カードチャット</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #e5e7eb; padding: 8px; font-weight: bold;">打开聊天</td>
+                            <td style="border: 1px solid #e5e7eb; padding: 8px;">Open Chat</td>
+                            <td style="border: 1px solid #e5e7eb; padding: 8px;">打开聊天</td>
+                            <td style="border: 1px solid #e5e7eb; padding: 8px;">開啟聊天</td>
+                            <td style="border: 1px solid #e5e7eb; padding: 8px;">チャットを開く</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #e5e7eb; padding: 8px; font-weight: bold;">设置</td>
+                            <td style="border: 1px solid #e5e7eb; padding: 8px;">Settings</td>
+                            <td style="border: 1px solid #e5e7eb; padding: 8px;">设置</td>
+                            <td style="border: 1px solid #e5e7eb; padding: 8px;">設定</td>
+                            <td style="border: 1px solid #e5e7eb; padding: 8px;">設定</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #e5e7eb; padding: 8px; font-weight: bold;">发送</td>
+                            <td style="border: 1px solid #e5e7eb; padding: 8px;">Send</td>
+                            <td style="border: 1px solid #e5e7eb; padding: 8px;">发送</td>
+                            <td style="border: 1px solid #e5e7eb; padding: 8px;">傳送</td>
+                            <td style="border: 1px solid #e5e7eb; padding: 8px;">送信</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #e5e7eb; padding: 8px; font-weight: bold;">创建卡片</td>
+                            <td style="border: 1px solid #e5e7eb; padding: 8px;">Create Card</td>
+                            <td style="border: 1px solid #e5e7eb; padding: 8px;">创建卡片</td>
+                            <td style="border: 1px solid #e5e7eb; padding: 8px;">建立卡片</td>
+                            <td style="border: 1px solid #e5e7eb; padding: 8px;">カードを作成</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>⚙️ 语言切换功能：</h4>
+                <div class="qa-item">
+                    <span class="qa-label-ai">Features:</span><br>
+                    <ul>
+                        <li><strong>自动检测</strong>：根据系统语言自动选择界面语言</li>
+                        <li><strong>手动切换</strong>：在设置中可以手动选择语言</li>
+                        <li><strong>即时生效</strong>：语言切换后立即更新界面文本</li>
+                        <li><strong>持久保存</strong>：语言设置会保存到配置文件</li>
+                        <li><strong>回退机制</strong>：如果翻译文件缺失，使用内置翻译</li>
+                    </ul>
+                </div>
+
+                <h4>🔧 技术实现：</h4>
+                <div class="qa-item">
+                    <span class="qa-label-ai">Implementation:</span><br>
+                    <ul>
+                        <li><strong>gettext标准</strong>：使用Python标准gettext模块</li>
+                        <li><strong>.po/.mo文件</strong>：标准的翻译文件格式</li>
+                        <li><strong>内置回退</strong>：包含硬编码翻译作为备用</li>
+                        <li><strong>自动编译</strong>：打包时自动编译翻译文件</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

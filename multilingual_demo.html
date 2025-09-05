@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with Card - 多语言演示</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8fafc;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        .demo-section {
+            padding: 30px;
+        }
+        .language-selector {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background-color: #f8fafc;
+            border-radius: 8px;
+        }
+        .language-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .lang-btn {
+            padding: 12px 24px;
+            border: 2px solid #e5e7eb;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        .lang-btn:hover {
+            border-color: #667eea;
+            background-color: #f0f4ff;
+        }
+        .lang-btn.active {
+            border-color: #667eea;
+            background-color: #667eea;
+            color: white;
+        }
+        .ui-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        .ui-component {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            background: #fafbfc;
+        }
+        .ui-component h3 {
+            margin: 0 0 15px 0;
+            color: #374151;
+            font-size: 1.2rem;
+        }
+        .mock-dialog {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .mock-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #111827;
+        }
+        .mock-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .mock-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        .mock-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .mock-btn.primary {
+            background-color: #111827;
+            color: white;
+        }
+        .mock-btn.secondary {
+            background-color: #f3f4f6;
+            color: #374151;
+        }
+        .translation-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .translation-table th,
+        .translation-table td {
+            border: 1px solid #e5e7eb;
+            padding: 12px;
+            text-align: left;
+        }
+        .translation-table th {
+            background-color: #f9fafb;
+            font-weight: 600;
+        }
+        .translation-table tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌍 Chat with Card</h1>
+            <p>多语言界面演示 - Multilingual Interface Demo</p>
+        </div>
+        
+        <div class="demo-section">
+            <div class="language-selector">
+                <h2>选择语言 / Choose Language</h2>
+                <div class="language-buttons">
+                    <button class="lang-btn active" onclick="switchLanguage('en')">🇺🇸 English</button>
+                    <button class="lang-btn" onclick="switchLanguage('zh_CN')">🇨🇳 简体中文</button>
+                    <button class="lang-btn" onclick="switchLanguage('zh_TW')">🇹🇼 繁體中文</button>
+                    <button class="lang-btn" onclick="switchLanguage('ja')">🇯🇵 日本語</button>
+                </div>
+            </div>
+            
+            <div class="ui-preview">
+                <!-- 聊天对话框预览 -->
+                <div class="ui-component">
+                    <h3>💬 聊天对话框</h3>
+                    <div class="mock-dialog">
+                        <div class="mock-title" id="chat-title">Chat with AI</div>
+                        <input type="text" class="mock-input" id="chat-placeholder" placeholder="Type your message...">
+                        <div class="mock-buttons">
+                            <button class="mock-btn secondary" id="clear-btn">Clear Chat</button>
+                            <button class="mock-btn primary" id="send-btn">Send</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 设置对话框预览 -->
+                <div class="ui-component">
+                    <h3>⚙️ 设置对话框</h3>
+                    <div class="mock-dialog">
+                        <div class="mock-title" id="settings-title">Chat with Card Settings</div>
+                        <div style="margin-bottom: 15px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: 500;" id="language-label">Language:</label>
+                            <select class="mock-input" style="width: auto;">
+                                <option>English</option>
+                                <option>简体中文</option>
+                                <option>繁體中文</option>
+                                <option>日本語</option>
+                            </select>
+                        </div>
+                        <div class="mock-buttons">
+                            <button class="mock-btn secondary" id="cancel-btn">Cancel</button>
+                            <button class="mock-btn primary" id="save-btn">Save</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 卡片按钮预览 -->
+                <div class="ui-component">
+                    <h3>🃏 卡片按钮</h3>
+                    <div class="mock-dialog">
+                        <div style="text-align: center; padding: 20px;">
+                            <div style="background: #f3f4f6; padding: 15px; border-radius: 4px; margin-bottom: 15px;">
+                                <strong>Sample Card Content</strong><br>
+                                This is a sample Anki card.
+                            </div>
+                            <button class="mock-btn primary" id="open-chat-btn" style="font-size: 16px; padding: 12px 24px;">
+                                Open Chat
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 翻译对照表 -->
+            <div style="margin-top: 40px;">
+                <h2>📋 翻译对照表</h2>
+                <table class="translation-table">
+                    <thead>
+                        <tr>
+                            <th>功能</th>
+                            <th>English</th>
+                            <th>简体中文</th>
+                            <th>繁體中文</th>
+                            <th>日本語</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>插件名称</strong></td>
+                            <td>Chat with Card</td>
+                            <td>卡片聊天</td>
+                            <td>卡片聊天</td>
+                            <td>カードチャット</td>
+                        </tr>
+                        <tr>
+                            <td><strong>打开聊天</strong></td>
+                            <td>Open Chat</td>
+                            <td>打开聊天</td>
+                            <td>開啟聊天</td>
+                            <td>チャットを開く</td>
+                        </tr>
+                        <tr>
+                            <td><strong>设置</strong></td>
+                            <td>Settings</td>
+                            <td>设置</td>
+                            <td>設定</td>
+                            <td>設定</td>
+                        </tr>
+                        <tr>
+                            <td><strong>发送</strong></td>
+                            <td>Send</td>
+                            <td>发送</td>
+                            <td>傳送</td>
+                            <td>送信</td>
+                        </tr>
+                        <tr>
+                            <td><strong>取消</strong></td>
+                            <td>Cancel</td>
+                            <td>取消</td>
+                            <td>取消</td>
+                            <td>キャンセル</td>
+                        </tr>
+                        <tr>
+                            <td><strong>保存</strong></td>
+                            <td>Save</td>
+                            <td>保存</td>
+                            <td>儲存</td>
+                            <td>保存</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 翻译数据
+        const translations = {
+            'en': {
+                'chat-title': 'Chat with AI',
+                'chat-placeholder': 'Type your message...',
+                'clear-btn': 'Clear Chat',
+                'send-btn': 'Send',
+                'settings-title': 'Chat with Card Settings',
+                'language-label': 'Language:',
+                'cancel-btn': 'Cancel',
+                'save-btn': 'Save',
+                'open-chat-btn': 'Open Chat'
+            },
+            'zh_CN': {
+                'chat-title': '与AI聊天',
+                'chat-placeholder': '输入您的消息...',
+                'clear-btn': '清空聊天',
+                'send-btn': '发送',
+                'settings-title': '卡片聊天设置',
+                'language-label': '语言：',
+                'cancel-btn': '取消',
+                'save-btn': '保存',
+                'open-chat-btn': '打开聊天'
+            },
+            'zh_TW': {
+                'chat-title': '與AI聊天',
+                'chat-placeholder': '輸入您的訊息...',
+                'clear-btn': '清空聊天',
+                'send-btn': '傳送',
+                'settings-title': '卡片聊天設定',
+                'language-label': '語言：',
+                'cancel-btn': '取消',
+                'save-btn': '儲存',
+                'open-chat-btn': '開啟聊天'
+            },
+            'ja': {
+                'chat-title': 'AIとチャット',
+                'chat-placeholder': 'メッセージを入力してください...',
+                'clear-btn': 'チャットをクリア',
+                'send-btn': '送信',
+                'settings-title': 'カードチャット設定',
+                'language-label': '言語：',
+                'cancel-btn': 'キャンセル',
+                'save-btn': '保存',
+                'open-chat-btn': 'チャットを開く'
+            }
+        };
+
+        function switchLanguage(lang) {
+            // 更新按钮状态
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // 更新界面文本
+            const langTranslations = translations[lang];
+            for (const [id, text] of Object.entries(langTranslations)) {
+                const element = document.getElementById(id);
+                if (element) {
+                    if (element.tagName === 'INPUT') {
+                        element.placeholder = text;
+                    } else {
+                        element.textContent = text;
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>

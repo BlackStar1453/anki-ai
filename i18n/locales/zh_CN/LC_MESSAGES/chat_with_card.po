@@ -1,0 +1,140 @@
+# Chinese Simplified translation for Chat with Card
+# Copyright (C) 2025 Chat with Card
+# This file is distributed under the same license as the Chat with Card package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Chat with Card 2.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-01-05 12:00+0000\n"
+"PO-Revision-Date: 2025-01-05 12:00+0000\n"
+"Last-Translator: AI Assistant\n"
+"Language-Team: Chinese Simplified\n"
+"Language: zh_CN\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# Menu items
+msgid "Chat with Card"
+msgstr "卡片聊天"
+
+msgid "Open Chat"
+msgstr "打开聊天"
+
+msgid "Settings"
+msgstr "设置"
+
+# Chat dialog
+msgid "Chat with AI"
+msgstr "与AI聊天"
+
+msgid "Type your message..."
+msgstr "输入您的消息..."
+
+msgid "Send"
+msgstr "发送"
+
+msgid "Clear Chat"
+msgstr "清空聊天"
+
+msgid "Create Card"
+msgstr "创建卡片"
+
+msgid "Close"
+msgstr "关闭"
+
+# Settings dialog
+msgid "Chat with Card Settings"
+msgstr "卡片聊天设置"
+
+msgid "Language"
+msgstr "语言"
+
+msgid "AI Provider"
+msgstr "AI提供商"
+
+msgid "API Key"
+msgstr "API密钥"
+
+msgid "Model"
+msgstr "模型"
+
+msgid "Max Tokens"
+msgstr "最大令牌数"
+
+msgid "Temperature"
+msgstr "温度"
+
+msgid "Save"
+msgstr "保存"
+
+msgid "Cancel"
+msgstr "取消"
+
+# Messages
+msgid "AI is thinking..."
+msgstr "AI正在思考..."
+
+msgid "Failed to get AI response"
+msgstr "获取AI回复失败"
+
+msgid "Card created successfully"
+msgstr "卡片创建成功"
+
+msgid "Failed to create card"
+msgstr "创建卡片失败"
+
+msgid "Please enter a message"
+msgstr "请输入消息"
+
+msgid "Settings saved successfully"
+msgstr "设置保存成功"
+
+# Card creation
+msgid "Question"
+msgstr "问题"
+
+msgid "Answer"
+msgstr "答案"
+
+msgid "Deck"
+msgstr "牌组"
+
+msgid "Note Type"
+msgstr "笔记类型"
+
+# Error messages
+msgid "Error"
+msgstr "错误"
+
+msgid "Warning"
+msgstr "警告"
+
+msgid "Information"
+msgstr "信息"
+
+msgid "API key is required"
+msgstr "需要API密钥"
+
+msgid "Invalid API key"
+msgstr "无效的API密钥"
+
+msgid "Network error"
+msgstr "网络错误"
+
+msgid "Timeout error"
+msgstr "超时错误"
+
+# Status messages
+msgid "Ready"
+msgstr "就绪"
+
+msgid "Connecting..."
+msgstr "连接中..."
+
+msgid "Processing..."
+msgstr "处理中..."
+
+msgid "Done"
+msgstr "完成"

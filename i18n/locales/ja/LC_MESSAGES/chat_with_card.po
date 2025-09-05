@@ -1,0 +1,140 @@
+# Japanese translation for Chat with Card
+# Copyright (C) 2025 Chat with Card
+# This file is distributed under the same license as the Chat with Card package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Chat with Card 2.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-01-05 12:00+0000\n"
+"PO-Revision-Date: 2025-01-05 12:00+0000\n"
+"Last-Translator: AI Assistant\n"
+"Language-Team: Japanese\n"
+"Language: ja\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# Menu items
+msgid "Chat with Card"
+msgstr "カードチャット"
+
+msgid "Open Chat"
+msgstr "チャットを開く"
+
+msgid "Settings"
+msgstr "設定"
+
+# Chat dialog
+msgid "Chat with AI"
+msgstr "AIとチャット"
+
+msgid "Type your message..."
+msgstr "メッセージを入力してください..."
+
+msgid "Send"
+msgstr "送信"
+
+msgid "Clear Chat"
+msgstr "チャットをクリア"
+
+msgid "Create Card"
+msgstr "カードを作成"
+
+msgid "Close"
+msgstr "閉じる"
+
+# Settings dialog
+msgid "Chat with Card Settings"
+msgstr "カードチャット設定"
+
+msgid "Language"
+msgstr "言語"
+
+msgid "AI Provider"
+msgstr "AIプロバイダー"
+
+msgid "API Key"
+msgstr "APIキー"
+
+msgid "Model"
+msgstr "モデル"
+
+msgid "Max Tokens"
+msgstr "最大トークン数"
+
+msgid "Temperature"
+msgstr "温度"
+
+msgid "Save"
+msgstr "保存"
+
+msgid "Cancel"
+msgstr "キャンセル"
+
+# Messages
+msgid "AI is thinking..."
+msgstr "AIが考えています..."
+
+msgid "Failed to get AI response"
+msgstr "AI応答の取得に失敗しました"
+
+msgid "Card created successfully"
+msgstr "カードが正常に作成されました"
+
+msgid "Failed to create card"
+msgstr "カードの作成に失敗しました"
+
+msgid "Please enter a message"
+msgstr "メッセージを入力してください"
+
+msgid "Settings saved successfully"
+msgstr "設定が正常に保存されました"
+
+# Card creation
+msgid "Question"
+msgstr "質問"
+
+msgid "Answer"
+msgstr "回答"
+
+msgid "Deck"
+msgstr "デッキ"
+
+msgid "Note Type"
+msgstr "ノートタイプ"
+
+# Error messages
+msgid "Error"
+msgstr "エラー"
+
+msgid "Warning"
+msgstr "警告"
+
+msgid "Information"
+msgstr "情報"
+
+msgid "API key is required"
+msgstr "APIキーが必要です"
+
+msgid "Invalid API key"
+msgstr "無効なAPIキー"
+
+msgid "Network error"
+msgstr "ネットワークエラー"
+
+msgid "Timeout error"
+msgstr "タイムアウトエラー"
+
+# Status messages
+msgid "Ready"
+msgstr "準備完了"
+
+msgid "Connecting..."
+msgstr "接続中..."
+
+msgid "Processing..."
+msgstr "処理中..."
+
+msgid "Done"
+msgstr "完了"
